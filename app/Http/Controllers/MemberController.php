@@ -7,31 +7,20 @@ use Illuminate\Http\Request;
 
 class MemberController extends Controller
 {
+    // 1. Properti ditaruh di sini (di dalam class, di luar fungsi)
+    private array $members = [
+        ['id' => 1, 'nama' => 'Siti Aminah', 'nim' => '2310501001', 'email' => 'siti.aminah@pens.ac.id', 'nomor_telepon' => '081234567890', 'status' => 'aktif'],
+        ['id' => 2, 'nama' => 'Budi Santoso', 'nim' => '2310501002', 'email' => 'budi.santoso@pens.ac.id', 'nomor_telepon' => '081298765432', 'status' => 'aktif'],
+        ['id' => 3, 'nama' => 'Dewi Lestari', 'nim' => '2310501003', 'email' => 'dewi.lestari@pens.ac.id', 'nomor_telepon' => '081211122233', 'status' => 'nonaktif'],
+    ];
+
     /**
-     * Menampilkan daftar anggota (menggunakan data dummy array).
+     * Menampilkan daftar anggota.
      */
+    // 2. Fungsi index lama diganti dengan yang memanggil $this->members
     public function index()
     {
-        $members = [
-            [
-                'id'            => 1,
-                'nama'          => 'Ahmad Fadhil',
-                'nim'           => '220101001',
-                'email'         => 'fadhil@example.com',
-                'nomor_telepon' => '081234567890',
-                'alamat'        => 'Jl. Sukolilo No. 10, Surabaya',
-                'status'        => 'aktif',
-            ],
-            [
-                'id'            => 2,
-                'nama'          => 'Budi Santoso',
-                'nim'           => '220101002',
-                'email'         => 'budi@example.com',
-                'nomor_telepon' => '082345678901',
-                'alamat'        => 'Jl. Gebang Wetan No. 5, Surabaya',
-                'status'        => 'nonaktif',
-            ],
-        ];
+        $members = $this->members;
 
         return view('members.index', compact('members'));
     }

@@ -1,53 +1,39 @@
-<!DOCTYPE html>
-<html lang="id">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Daftar Anggota</title>
-</head>
-<body>
-    <h1>Daftar Anggota Perpustakaan</h1>
+{{-- File: resources/views/members/index.blade.php --}}
+@extends('layouts.app')
 
-    {{-- Flash message sukses --}}
-    @if(session('success'))
-        <div style="color: green; margin-bottom: 15px;">
-            {{ session('success') }}
-        </div>
-    @endif
+@section('title', 'Daftar Anggota')
 
-    <p>
-        <a href="{{ route('members.create') }}">+ Tambah Anggota Baru</a>
-    </p>
+@section('content')
+    <h1>Daftar Anggota</h1>
 
-    <table border="1" cellpadding="8" cellspacing="0" style="border-collapse: collapse; width: 100%;">
+    <table>
         <thead>
             <tr>
-                <th>No</th>
-                <th>NIM</th>
+                <th>ID</th>
                 <th>Nama</th>
+                <th>NIM</th>
                 <th>Email</th>
-                <th>Nomor Telepon</th>
-                <th>Alamat</th>
+                <th>No. Telepon</th>
                 <th>Status</th>
             </tr>
         </thead>
         <tbody>
-            @forelse($members as $index => $member)
+            @forelse ($members as $member)
                 <tr>
-                    <td>{{ $index + 1 }}</td>
-                    <td>{{ $member['nim'] }}</td>
+                    <td>{{ $member['id'] }}</td>
                     <td>{{ $member['nama'] }}</td>
+                    <td>{{ $member['nim'] }}</td>
                     <td>{{ $member['email'] }}</td>
                     <td>{{ $member['nomor_telepon'] }}</td>
-                    <td>{{ $member['alamat'] }}</td>
                     <td>{{ ucfirst($member['status']) }}</td>
                 </tr>
             @empty
                 <tr>
-                    <td colspan="7" style="text-align: center;">Tidak ada data anggota.</td>
+                    <td colspan="6">Belum ada data anggota.</td>
                 </tr>
             @endforelse
         </tbody>
     </table>
-</body>
-</html>
+
+    <p><em>Catatan: data di atas masih data dummy (array statis di Controller). Form tambah/edit anggota dan CRUD lengkap anggota baru dibuat mulai Pertemuan 5.</em></p>
+@endsection
