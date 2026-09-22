@@ -12,7 +12,7 @@ class StoreMemberRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -23,7 +23,12 @@ class StoreMemberRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'nama'          => 'required|string|max:255',
+            'nim'           => 'required|string|max:50',
+            'email'         => 'required|email|max:255',
+            'nomor_telepon' => 'required|string|max:20',
+            'alamat'        => 'required|string',
+            'status'        => 'required|in:aktif,nonaktif',
         ];
     }
 }
