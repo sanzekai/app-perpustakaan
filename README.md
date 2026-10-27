@@ -1,59 +1,138 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Sistem Informasi Perpustakaan (app-perpustakaan)
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Aplikasi manajemen perpustakaan modern berbasis **Laravel 12** yang mencakup sistem autentikasi, manajemen buku, kategori, anggota, transaksi sirkulasi (peminjaman & pengembalian buku), konsumsi internal REST API untuk dashboard & laporan, serta RESTful API lengkap untuk integrasi client eksternal.
 
-## About Laravel
+---
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## 🚀 Fitur Utama
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+- **Autentikasi & Autorisasi**:
+  - Login dan logout berbasis session.
+  - Role-based access control (Admin & Petugas) via Middleware.
+- **Manajemen Data (CRUD)**:
+  - **Kategori**: Pengelompokan buku dan relasi kategori.
+  - **Buku**: Manajemen inventaris buku, nomor ISBN, stok dinamis, dan filter pencarian.
+  - **Anggota**: Pendaftaran anggota perpustakaan dengan kode identitas unik.
+- **Sirkulasi Perpustakaan**:
+  - Form transaksi peminjaman multi-buku.
+  - Pengurangan dan pengembalian stok otomatis.
+  - Pencatatan tanggal pinjam, batas kembali, dan riwayat status transaksi.
+- **Dashboard & Laporan (Internal API Consumption)**:
+  - Dashboard statistik interaktif (Total Buku, Total Anggota, Peminjaman Aktif).
+  - Laporan rekap transaksi peminjaman yang mengonsumsi endpoint internal API via Laravel HTTP Client (`Http::timeout()->get()`).
+  - Mekanisme fallback ketahanan jaringan (`ConnectionException`) agar sistem tetap tampil meski server API offline.
+- **Layanan RESTful API**:
+  - Format response JSON standar menggunakan Laravel API Resource (`JsonResource`).
+  - Mendukung endpoint Books, Members, Loans, dan Stats (lihat [API.md](./API.md) untuk dokumentasi lengkap).
+- **Tampilan Bersih & Custom Pagination**:
+  - UI sederhana dan responsif.
+  - Pagination custom yang rapi menggantikan SVG default bawaan framework.
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+---
 
-## Learning Laravel
+## 📋 Prasyarat Sistem
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+Pastikan environment Anda telah terpasang:
+- **PHP** >= 8.2
+- **Composer** >= 2.x
+- **Ekstensi PHP**: `pdo_sqlite`, `curl`, `mbstring`, `openssl`, `tokenizer`, `xml`
+- **Git**
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+---
 
-## Laravel Sponsors
+## 🛠️ Panduan Instalasi & Setup
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+Ikuti langkah-langkah berikut untuk menjalankan aplikasi:
 
-### Premium Partners
+### 1. Clone Repository
+```bash
+git clone <url-repository-anda> app-perpustakaan
+cd app-perpustakaan
+```
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+### 2. Install Dependensi PHP
+```bash
+composer install
+```
 
-## Contributing
+### 3. Konfigurasi Environment (`.env`)
+Salin file `.env.example` ke `.env`:
+```bash
+cp .env.example .env
+```
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+Pastikan variabel penting di `.env` sudah sesuai (menggunakan SQLite dan setting internal API URL):
+```env
+APP_NAME=Perpustakaan
+APP_ENV=local
+APP_KEY=
+APP_DEBUG=true
+APP_URL=http://localhost:8000
 
-## Code of Conduct
+DB_CONNECTION=sqlite
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+# URL Target Internal API untuk Dashboard & Laporan
+INTERNAL_API_URL=http://127.0.0.1:8011
+```
 
-## Security Vulnerabilities
+Buat file database SQLite (jika belum ada):
+```bash
+touch database/database.sqlite
+```
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+Generate application key:
+```bash
+php artisan key:generate
+```
 
-## License
+### 4. Migrasi & Seeding Database
+Jalankan migrasi seluruh tabel beserta data awal contoh (User, Kategori, Buku, Anggota, dan Peminjaman):
+```bash
+php artisan migrate:fresh --seed
+```
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+---
+
+## 🖥️ Menjalankan Dua Server (PENTING)
+
+Arsitektur aplikasi ini memisahkan konsumsi internal API pada Dashboard dan Laporan. Halaman web (port `8000`) melakukan request HTTP ke endpoint API (port `8011`).
+
+Buka **dua terminal terpisah**:
+
+### Terminal 1: Web Application Server (Port 8000)
+```bash
+php artisan serve --port=8000
+```
+> Server web utama dapat diakses di browser melalui: **`http://127.0.0.1:8000`**
+
+### Terminal 2: API Service Server (Port 8011)
+```bash
+php artisan serve --port=8011
+```
+> Server API yang melayani request internal untuk `/api/stats` dan `/api/loans`.
+
+---
+
+## 👤 Akun Pengujian (Default Seeder)
+
+| Role | Email | Password | Nama Pengguna |
+|---|---|---|---|
+| **Admin** | `admin@pens.ac.id` | `password` | Bambang Sutrisno |
+| **Petugas** | `petugas1@pens.ac.id` | `password` | Siti Rahmawati |
+| **Petugas** | `petugas2@pens.ac.id` | `password` | Ahmad Fauzi |
+
+---
+
+## 🧪 Pengujian Unit & Fitur
+
+Jalankan test suite otomatis menggunakan PHPUnit / Artisan test:
+```bash
+php artisan test
+```
+
+---
+
+## 📖 Dokumentasi Lanjutan
+
+- **Skenario Demo UAS**: Lihat panduan langkah-langkah demo lengkap di [DEMO.md](./DEMO.md).
+- **Dokumentasi REST API**: Spesifikasi 11 endpoint API perpustakaan lengkap dengan contoh payload dan response di [API.md](./API.md).
